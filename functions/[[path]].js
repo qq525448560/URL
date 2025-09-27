@@ -1,10 +1,16 @@
-// 目标URL
+// 目标URL和域名
 const TARGET_URL = "https://xmm123-cc.hf.space/";
+const TARGET_DOMAIN = new URL(TARGET_URL).hostname;
 
 export async function onRequest(context) {
   const { request } = context;
   const url = new URL(request.url);
   const path = url.pathname;
+  
+  // 检查是否已经在目标域名上，避免循环重定向
+  if (url.hostname === TARGET_DOMAIN) {
+    return new Response("Already at target domain", { status: 200 });
+  }
   
   // 处理不同路径
   if (path === "/" || path === "/url302") {
